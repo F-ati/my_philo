@@ -6,7 +6,7 @@
 /*   By: fel-aziz <fel-aziz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 13:42:02 by fel-aziz          #+#    #+#             */
-/*   Updated: 2024/12/16 17:20:22 by fel-aziz         ###   ########.fr       */
+/*   Updated: 2024/12/16 17:41:09 by fel-aziz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,9 @@ typedef struct s_forks
 typedef struct s_data
 {
 	t_input input;
-	t_philo *philos;
-	t_forks *forks;
+	// t_philo *philos;
+	// t_forks *forks;
+	pthread_mutex_t chare_mutex;
 	int	*error;
 	int *full;
 	int *is_die;
@@ -55,9 +56,11 @@ typedef struct s_data
 
 int	check_is_number(char *str);
 int	ft_atoi(char *str);
-int allocate_data(t_data  **data , t_philo **philo, t_forks **forks , int nb_of_philo);
+int	allocate_data(t_data **data,pthread_t **philo, pthread_mutex_t **forks,
+		int nb_of_philo);
 void init_iput(t_data *data ,char **av ,int nb);
 void initialize_data( t_data *data,char *av[]);
+int initialize_mutex(t_data *data ,pthread_mutex_t *forks);
 
 
 

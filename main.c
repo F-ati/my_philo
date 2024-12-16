@@ -6,7 +6,7 @@
 /*   By: fel-aziz <fel-aziz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 13:40:39 by fel-aziz          #+#    #+#             */
-/*   Updated: 2024/12/16 17:20:48 by fel-aziz         ###   ########.fr       */
+/*   Updated: 2024/12/16 17:33:54 by fel-aziz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,10 @@ int check_error(int  ac , char **av)
 
 int main(int ac , char *av[])
 {
-	t_philo *philo;
+	pthread_t *philo;
 	t_data *data;
-	t_forks *forks;
+	pthread_mutex_t *forks;
+	
 	if(check_error(ac , av) != 0)
 		return(1);
 	if (allocate_data(&data ,&philo, &forks , ft_atoi(av[1])) != 0)
@@ -50,5 +51,5 @@ int main(int ac , char *av[])
 		return(1);
 	}
 	initialize_data(data,av);
-	// initialize_mutex(data ,forks);
+	initialize_mutex(data ,forks);
 }

@@ -6,7 +6,7 @@
 /*   By: fel-aziz <fel-aziz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 15:19:09 by fel-aziz          #+#    #+#             */
-/*   Updated: 2024/12/16 17:16:00 by fel-aziz         ###   ########.fr       */
+/*   Updated: 2024/12/16 17:27:20 by fel-aziz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ int allocate_chare_data(t_data *data)
 	return(0);
 }
 
-int	allocate_data(t_data **data, t_philo **philo, t_forks **forks,
+int	allocate_data(t_data **data,pthread_t **philo, pthread_mutex_t **forks,
 		int nb_of_philo)
 {
 	*data = malloc(sizeof(t_data) * nb_of_philo);

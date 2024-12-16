@@ -6,7 +6,7 @@
 /*   By: fel-aziz <fel-aziz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 15:36:02 by fel-aziz          #+#    #+#             */
-/*   Updated: 2024/12/16 17:20:10 by fel-aziz         ###   ########.fr       */
+/*   Updated: 2024/12/16 17:40:57 by fel-aziz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,4 +62,21 @@ void initialize_data( t_data *data,char *av[])
 		i++;
 	}
 	
+}
+
+int initialize_mutex(t_data *data ,pthread_mutex_t *forks)
+{
+	int i;
+	i = 0;
+	if(pthread_mutex_init(&data->chare_mutex , NULL) != 0)
+	{
+		return(-7);
+	}
+	while(i < data->input.nb_of_philo)
+	{
+		if(pthread_mutex_init(&forks[i],NULL) != 0)
+			return(-7);
+		i++;
+	}
+	return(0);
 }
