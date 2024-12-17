@@ -4,7 +4,7 @@ CC = cc
 
 CFLAGS = -Wall -Wextra -Werror 
 
-SRS = main.c philo_utils.c init.c
+SRS = main.c philo_utils.c init.c simulation.c
 
 OBJC =  $(SRS:.c=.o)
 

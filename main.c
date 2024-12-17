@@ -6,7 +6,7 @@
 /*   By: fel-aziz <fel-aziz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 13:40:39 by fel-aziz          #+#    #+#             */
-/*   Updated: 2024/12/16 17:33:54 by fel-aziz         ###   ########.fr       */
+/*   Updated: 2024/12/17 12:54:49 by fel-aziz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,5 +51,13 @@ int main(int ac , char *av[])
 		return(1);
 	}
 	initialize_data(data,av);
-	initialize_mutex(data ,forks);
+	if (initialize_mutex(data ,forks) != 0)
+	{
+		printf("error in init the mutex \n");
+		// distroy;
+		// free;
+	}
+	init_threads_with_forks(data,philo,forks);
+	// sleep(1);
+	wait_for_all_threads(data , philo);
 }

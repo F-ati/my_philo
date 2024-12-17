@@ -6,7 +6,7 @@
 /*   By: fel-aziz <fel-aziz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 15:19:09 by fel-aziz          #+#    #+#             */
-/*   Updated: 2024/12/16 17:27:20 by fel-aziz         ###   ########.fr       */
+/*   Updated: 2024/12/17 11:20:35 by fel-aziz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ int	ft_atoi(char *str)
 	return ((int)(r));
 }
 
-int allocate_chare_data(t_data *data)
+int allocate_chared_data(t_data *data)
 {
 	data->p1 = malloc(sizeof(int));
 	if(data->p1 == NULL)
@@ -112,7 +112,7 @@ int	allocate_data(t_data **data,pthread_t **philo, pthread_mutex_t **forks,
 		free(*philo);
 		return (-7);
 	}
-	if(allocate_chare_data(*data) == -7)
+	if(allocate_chared_data(*data) == -7)
 	{
 		free(*data);
 		free(*philo);
