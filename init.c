@@ -6,7 +6,7 @@
 /*   By: fel-aziz <fel-aziz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 15:36:02 by fel-aziz          #+#    #+#             */
-/*   Updated: 2024/12/17 12:55:07 by fel-aziz         ###   ########.fr       */
+/*   Updated: 2024/12/18 15:42:37 by fel-aziz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ int initialize_mutex(t_data *data ,pthread_mutex_t *forks)
 	i = 0;
 	if(pthread_mutex_init(&data->chared_mutex , NULL) != 0)
 	{
+		printf("here\n");
 		return(-7);
 	}
 	while(i < data->input.nb_of_philo)
@@ -95,7 +96,6 @@ int init_threads_with_forks(t_data *data,pthread_t *philo,pthread_mutex_t *forks
 {
 	int i ;
 	i = 0;
-	(void)philo;
 	while(i < data->input.nb_of_philo)
 	{
 		data[i].left_forks = &forks[i];

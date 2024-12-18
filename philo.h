@@ -6,7 +6,7 @@
 /*   By: fel-aziz <fel-aziz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 13:42:02 by fel-aziz          #+#    #+#             */
-/*   Updated: 2024/12/17 12:54:34 by fel-aziz         ###   ########.fr       */
+/*   Updated: 2024/12/18 13:43:13 by fel-aziz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,16 +28,6 @@ typedef struct s_input
 	int nb_of_meals;
 }t_input;
 
-typedef struct s_philo
-{
-	
-} t_philo;
-
-typedef struct s_forks
-{
-
-}t_forks;
-
 typedef struct s_data
 {
 	t_input input;
@@ -45,6 +35,8 @@ typedef struct s_data
 	pthread_mutex_t chared_mutex;
 	pthread_mutex_t *left_forks;
 	pthread_mutex_t *right_fork;
+	int meal_count;
+	struct timeval last_meal_time;
 	int	*error;
 	int *full;
 	int *is_die;
@@ -65,6 +57,7 @@ int initialize_mutex(t_data *data ,pthread_mutex_t *forks);
 int init_threads_with_forks(t_data *data,pthread_t *philo,pthread_mutex_t *forks);
 void *simulation( void *str);
 int wait_for_all_threads(t_data *data , pthread_t  *philo);
+void write_action(t_data *data , char *s);
 
 
 
