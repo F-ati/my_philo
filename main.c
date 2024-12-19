@@ -6,7 +6,7 @@
 /*   By: fel-aziz <fel-aziz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 13:40:39 by fel-aziz          #+#    #+#             */
-/*   Updated: 2024/12/18 15:59:39 by fel-aziz         ###   ########.fr       */
+/*   Updated: 2024/12/19 15:30:06 by fel-aziz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,15 +42,22 @@ int main(int ac , char *av[])
 	pthread_t *philo;
 	t_data *data;
 	pthread_mutex_t *forks;
+	pthread_mutex_t for_mutex;
+	
 	
 	if(check_error(ac , av) != 0)
 		return(1);
+	if(pthread_mutex_init(&for_mutex,NULL) != 0)
+	{
+		printf("error in init the char_mtex\n");
+		return(1);
+	}
 	if (allocate_data(&data ,&philo, &forks , ft_atoi(av[1])) != 0)
 	{
 		printf("error in malloc \n");
 		return(1);
 	}
-	initialize_data(data,av);
+	initialize_data(data,av ,&for_mutex);
 	if (initialize_mutex(data ,forks) != 0)
 	{
 		printf("error in init the mutex \n");
@@ -58,16 +65,18 @@ int main(int ac , char *av[])
 		// free;
 	}
 	init_threads_with_forks(data,philo,forks);
+	while(1)
+	{
+		// printf("hello\n");
+		pthread_mutex_lock(data->chared_mutex);
+		if(*data->is_die == 1 || *data->full == 1)
+		{
+			// printf("--------->%d %s\n",*data->error,"is die");
+			pthread_mutex_unlock(data->chared_mutex);
+			break;
+		}
+		pthread_mutex_unlock(data->chared_mutex);
+	}
 	wait_for_all_threads(data , philo);
-	// while(1)
-	// {
-	// 	pthread_mutex_lock(&data->chared_mutex);
-	// 	if(*data->is_die == 1)
-	// 	{
-	// 		printf("%d %s\n",*data->error,"is die");
-	// 		pthread_mutex_unlock(&data->chared_mutex);
-	// 		break;
-	// 	}
-	// 	pthread_mutex_unlock(&data->chared_mutex);
-	// }
+	// exit(1);
 }

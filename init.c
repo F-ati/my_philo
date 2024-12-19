@@ -6,7 +6,7 @@
 /*   By: fel-aziz <fel-aziz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 15:36:02 by fel-aziz          #+#    #+#             */
-/*   Updated: 2024/12/18 15:42:37 by fel-aziz         ###   ########.fr       */
+/*   Updated: 2024/12/19 12:45:42 by fel-aziz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,23 +49,26 @@ void init_chare_data(t_data *data ,int nb)
 
 
 }
-void init_global_data(t_data *data , int nb)
+void init_global_data(t_data *data , int nb , pthread_mutex_t *for_mutex)
 {
 	int i = 0;
 	while(i < nb)
 	{
 		data[i].philo_id = i + 1;
+		data[i].chared_mutex = for_mutex;
+		// printf("%p\n",data[i].chared_mutex);
 		i++;
 	}
 }
-void initialize_data( t_data *data,char *av[])
+void initialize_data( t_data *data,char *av[] , pthread_mutex_t *for_mutex)
 {
 	
 	// int i = 0;
 	int nb_of_philo = ft_atoi(av[1]);
 	init_iput(data ,av , nb_of_philo);
 	init_chare_data(data,nb_of_philo);
-	init_global_data(data , nb_of_philo);
+	// exit(4);
+	init_global_data(data , nb_of_philo ,for_mutex);
 	// while(i < nb_of_philo)
 	// {
 	// 	printf("%d\n",data[i].input.nb_of_meals);
@@ -78,11 +81,11 @@ int initialize_mutex(t_data *data ,pthread_mutex_t *forks)
 {
 	int i;
 	i = 0;
-	if(pthread_mutex_init(&data->chared_mutex , NULL) != 0)
-	{
-		printf("here\n");
-		return(-7);
-	}
+	// if(pthread_mutex_init(&data->chared_mutex , NULL) != 0)
+	// {
+	// 	printf("here\n");
+	// 	return(-7);
+	// }
 	while(i < data->input.nb_of_philo)
 	{
 		if(pthread_mutex_init(&forks[i],NULL) != 0)
