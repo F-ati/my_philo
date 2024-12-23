@@ -6,7 +6,7 @@
 /*   By: fel-aziz <fel-aziz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 13:42:02 by fel-aziz          #+#    #+#             */
-/*   Updated: 2024/12/19 12:39:14 by fel-aziz         ###   ########.fr       */
+/*   Updated: 2024/12/22 11:50:13 by fel-aziz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ typedef struct s_data
 	pthread_mutex_t *right_fork;
 	int meal_count;
 	struct timeval last_meal_time;
+	struct timeval sim_start_time;
 	int	*error;
 	int *full;
 	int *is_die;

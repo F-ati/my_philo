@@ -6,13 +6,13 @@
 /*   By: fel-aziz <fel-aziz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:22:57 by fel-aziz          #+#    #+#             */
-/*   Updated: 2024/12/19 16:53:00 by fel-aziz         ###   ########.fr       */
+/*   Updated: 2024/12/23 15:05:56 by fel-aziz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-long get_time_passed(struct timeval pre_sleep_time)
+long get_time_passed_us(struct timeval pre_sleep_time)
 {
 	struct timeval post_sleep_time;
 	long time_in_us;
@@ -21,15 +21,40 @@ long get_time_passed(struct timeval pre_sleep_time)
 	return(time_in_us);
 }
 
+long get_time_passed_mill(struct timeval start_time)
+{
+	struct timeval time_passed;
+	long time_mill;
+	gettimeofday(&time_passed,NULL);
+	time_mill =  ((time_passed.tv_sec * 1000) + (time_passed.tv_usec / 1000)) - ((start_time.tv_sec * 1000) + (start_time.tv_usec / 1000));
+	return(time_mill);
+}
+
 void write_action(t_data *data , char *s)
 {
 	pthread_mutex_lock(data->chared_mutex);
-	printf(" %d %s\n",data->philo_id, s);
+	printf("[%ld]  %d %s\n",get_time_passed_mill(data->sim_start_time),data->philo_id, s);
 	pthread_mutex_unlock(data->chared_mutex);
 
 }
 
-void sleep_philo(int time_must_sleep)
+
+void check_is_die(t_data *data)
+{
+	struct timeval passed_time;
+	long time_in_mill;
+	gettimeofday(&passed_time,NULL);
+	time_in_mill =  (passed_time.tv_sec * 1000 + passed_time.tv_usec / 1000)  - (data->sim_start_time.tv_sec * 1000 + data->sim_start_time.tv_usec / 1000);
+	if (time_in_mill > data->input.time_to_die)
+	{
+		// printf("-->%ld\n",time_in_mill);
+		// printf("%d\n",data->input.time_to_die);
+		pthread_mutex_lock(data->chared_mutex);
+		*data->is_die = 1;
+		pthread_mutex_unlock(data->chared_mutex);
+	}
+}
+void sleep_philo(int time_must_sleep ,t_data *data)
 {
 	long time_to_sleep_us;
 	struct timeval pre_sleep_time;
@@ -39,32 +64,24 @@ void sleep_philo(int time_must_sleep)
 	while( time_passed < time_to_sleep_us)
 	{
 		usleep(60);
-		// if sume philo is die
-		time_passed = get_time_passed(pre_sleep_time);
+		check_is_die(data);
+		pthread_mutex_lock(data->chared_mutex);
+		if(*data->is_die == 1)
+		{
+			pthread_mutex_unlock(data->chared_mutex);
+			break;
+		}
+		pthread_mutex_unlock(data->chared_mutex);
+
+		time_passed = get_time_passed_us(pre_sleep_time);
 	}
 }
-
 void run_single_philosopher(t_data *data)
 {
 	write_action(data," is thinking");
 	write_action(data," has taken a fork");
-	sleep_philo(data->input.time_to_die);
+	sleep_philo(data->input.time_to_die ,data);
 	write_action(data," died");
-}
-void check_is_die(t_data *data)
-{
-	struct timeval passed_time;
-	long time_in_mill;
-	gettimeofday(&passed_time,NULL);
-	time_in_mill =  (passed_time.tv_sec * 1000 + passed_time.tv_usec / 1000)  - (data->last_meal_time.tv_sec * 1000 + data->last_meal_time.tv_usec / 1000);
-
-	printf("------------>%ld\n",time_in_mill);
-	if (time_in_mill > data->input.time_to_die)
-	{
-		pthread_mutex_lock(data->chared_mutex);
-		*data->is_die = 1;
-		pthread_mutex_unlock(data->chared_mutex);
-	}
 }
 
 int stop_sumulation(t_data *data)
@@ -87,14 +104,15 @@ void start_sumulation(t_data *data)
 	 
 	while(stop_sumulation(data) == 0)
 	{
-		printf("hello\n");
 		write_action(data," is thinking");
 		pthread_mutex_lock(data->left_forks);
 		write_action(data," has taken a fork");
 		pthread_mutex_unlock(data->right_fork);
 		write_action(data , " has taken a fork");
 		write_action(data," is eating");
-		sleep_philo(data->input.time_to_eat);
+		check_is_die(data);
+		// gettimeofday(&data->sim_start_time,NULL);
+		sleep_philo(data->input.time_to_eat ,data);
 		pthread_mutex_lock(data->chared_mutex);
 		data->meal_count = data->meal_count + 1;
 		pthread_mutex_unlock(data->chared_mutex);
@@ -109,9 +127,8 @@ void start_sumulation(t_data *data)
 		}
 		pthread_mutex_unlock(data->left_forks);
 		pthread_mutex_unlock(data->right_fork);
-		// gettimeofday(&data->last_meal_time , NULL);
 		write_action(data, " is sleeping");
-		sleep_philo(data->input.time_to_sleep);
+		sleep_philo(data->input.time_to_sleep ,data);
 	}
 
 }
@@ -120,7 +137,7 @@ void *simulation( void *str)
 {
 	t_data *data;
 	data = (t_data *)str;
-	gettimeofday(&data->last_meal_time , NULL);
+	gettimeofday(&data->sim_start_time,NULL);
 	if (data->input.nb_of_philo == 1)
 	{
 		run_single_philosopher(data);
@@ -129,10 +146,9 @@ void *simulation( void *str)
 	if( data->philo_id % 2 == 0)
 	{
 		write_action(data, " is sleeping");
-		sleep_philo(data->input.time_to_sleep);
+		sleep_philo(data->input.time_to_sleep ,data);
 
 	}
 	start_sumulation(data);
 	return(NULL);
-
 }
