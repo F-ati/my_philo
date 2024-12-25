@@ -6,7 +6,7 @@
 /*   By: fel-aziz <fel-aziz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 13:40:39 by fel-aziz          #+#    #+#             */
-/*   Updated: 2024/12/24 12:48:18 by fel-aziz         ###   ########.fr       */
+/*   Updated: 2024/12/25 13:34:24 by fel-aziz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,16 +67,17 @@ int main(int ac , char *av[])
 	init_threads_with_forks(data,philo,forks);
 	while(1)
 	{
-		// printf("hello\n");
 		pthread_mutex_lock(data->chared_mutex);
-		if(*data->is_die == 1 || *data->full == 1)
+		if(*data->is_die == 1 || *data->full == 1 || data->input.nb_of_philo == 1)
 		{
-			// printf("--------->%d %s\n",*data->error,"is die");
+			if(*data->is_die == 1 )
+			{
+				write_action(data,"is die");
+			}
 			pthread_mutex_unlock(data->chared_mutex);
 			break;
 		}
 		pthread_mutex_unlock(data->chared_mutex);
 	}
 	wait_for_all_threads(data , philo);
-	// exit(1);
 }

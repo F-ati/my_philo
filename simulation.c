@@ -6,7 +6,7 @@
 /*   By: fel-aziz <fel-aziz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:22:57 by fel-aziz          #+#    #+#             */
-/*   Updated: 2024/12/24 13:08:18 by fel-aziz         ###   ########.fr       */
+/*   Updated: 2024/12/25 12:33:26 by fel-aziz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ void sleep_philo(int time_must_sleep ,t_data *data)
 	gettimeofday(&pre_sleep_time,NULL);
 	while( time_passed < time_to_sleep_us)
 	{
+		
 		usleep(60);
 		check_is_die(data);
 		pthread_mutex_lock(data->chared_mutex);
@@ -114,6 +115,8 @@ void start_sumulation(t_data *data)
 		if(*data->is_die == 1 )
 		{
 			*data->error = data->philo_id;
+			pthread_mutex_unlock(data->left_forks);
+			pthread_mutex_unlock(data->right_fork);
 			pthread_mutex_unlock(data->chared_mutex);
 			break;
 		}
@@ -144,11 +147,13 @@ void *simulation( void *str)
 {
 	t_data *data;
 	data = (t_data *)str;
+	data->meal_count = 0;
 	gettimeofday(&data->sim_start_time,NULL);
 	gettimeofday(&data->calcule_time,NULL);
 	if (data->input.nb_of_philo == 1)
 	{
 		run_single_philosopher(data);
+		// exit(99);
 		return(NULL);
 	}
 	if( data->philo_id % 2 == 0)

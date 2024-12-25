@@ -6,7 +6,7 @@
 /*   By: fel-aziz <fel-aziz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 15:36:02 by fel-aziz          #+#    #+#             */
-/*   Updated: 2024/12/19 12:45:42 by fel-aziz         ###   ########.fr       */
+/*   Updated: 2024/12/25 12:01:44 by fel-aziz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,11 +103,18 @@ int init_threads_with_forks(t_data *data,pthread_t *philo,pthread_mutex_t *forks
 	{
 		data[i].left_forks = &forks[i];
 		data[i].right_fork = &forks[(i + 1) % data->input.nb_of_philo];
+		if(*data->is_die == 1 || *data->full == 1)
+		{
+			pthread_mutex_unlock(data->chared_mutex);
+			break;
+		}
 		if(pthread_create(&philo[i],NULL,&simulation,&data[i]) != 0)
 		{
 			printf("error in create the thread nb\n");
 			return(-7);
 		}
+		pthread_mutex_lock(data->chared_mutex);
+		pthread_mutex_unlock(data->chared_mutex);
 		i++;
 	}
 	return(0);
